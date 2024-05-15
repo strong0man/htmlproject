@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Management</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            padding: 20px;
+            text-align: center;
+        }
+        .code-display {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Attendance Management System</h1>
+        <div>
+            <p>Teacher's Code: <span id="teacher-code" class="code-display"></span></p>
+            <button class="btn waves-effect waves-light" onclick="generateCode()">Generate New Code</button>
+        </div>
+        <div class="attendance-form">
+            <form id="attendance-form" onsubmit="markAttendance(event)">
+                <div class="input-field">
+                    <input type="text" id="student-code" required>
+                    <label for="student-code">Enter the code</label>
+                </div>
+                <button id="submit-button" class="btn waves-effect waves-light" type="submit">Submit</button>
+            </form>
+            <div id="attendance-result" class="result"></div>
+        </div>
+    </div>
+
+    <!-- Materialize JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        // Generate a random code and display it for the teacher
+        function generateCode() {
+            const code = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('teacher-code').innerText = code;
+            document.getElementById('teacher-code').classList.remove('hidden');
+            localStorage.setItem('attendanceCode', code);
+        }
+
+        // Function to mark attendance
+        function markAttendance(event) {
+            event.preventDefault(); // Prevent form submission
+            const enteredCode = document.getElementById('student-code').value;
+            const storedCode = localStorage.getItem('attendanceCode');
+            const resultDiv = document.getElementById('attendance-result');
+
+            if (enteredCode === storedCode) {
+                resultDiv.innerText = "Attendance marked successfully!";
+                resultDiv.style.color = "green";
+            } else {
+                resultDiv.innerText = "Incorrect code. The code has been hidden.";
+                resultDiv.style.color = "red";
+                document.getElementById('teacher-code').classList.add('hidden');
+            }
+            resultDiv.classList.remove('hidden');
+        }
+
+        // Simple JSON-based database for demonstration
+        let database = {
+            attendanceRecords: []
+        };
+
+        // Initialize with a code if not already set
+        window.onload = () => {
+            if (!localStorage.getItem('attendanceCode')) {
+                generateCode();
+            } else {
+                document.getElementById('teacher-code').innerText = localStorage.getItem('attendanceCode');
+            }
+        };
+    </script>
+    <a href="index!.html">click here</a>
+</body>
+</html>
